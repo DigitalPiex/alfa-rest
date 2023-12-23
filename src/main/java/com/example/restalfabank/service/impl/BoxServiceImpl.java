@@ -12,7 +12,7 @@ public class BoxServiceImpl implements BoxService {
 
     private final BoxRepository boxRepository;
 
-    public void save(Box box) {
-        boxRepository.save(box);
+    public Box save(Box box) {
+        return boxRepository.save(box);
     }
 }

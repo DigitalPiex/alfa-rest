@@ -23,8 +23,9 @@ public class ItemController {
     private final FilterService filterService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Long>> getAllItems(@RequestParam(defaultValue = "", required = false) String box,
-                                                     @RequestParam(defaultValue = "", required = false) String color
+    public ResponseEntity<List<Long>> getAllItems(
+            @RequestParam(defaultValue = "", required = false) String box,
+            @RequestParam(defaultValue = "", required = false) String color
     ) {
 
         List<Item> items = filterService.getResultItems(box, color);

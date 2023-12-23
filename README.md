@@ -1,45 +1,62 @@
-# REST-service for Alfa Bank
+Стек технологий: Java17, PostgreSQL, Hibernate, SpringBoot
 
-The application uses entities: an item and a box. 
-When the application starts, it receives a link to an XML file in the form of a command line parameter, in which the relative position of items and boxes is specified. 
-XML file can be loaded from different sources: external file, file in classpath, URL. 
-At startup, the application creates tables in the database and fills them with data in accordance with the transferred XML file. 
-After loading the file, the application works as a REST-service that returns the id of items of the given color, contained in the box and in all nested boxes with the given id of the root box.
+Входные данные
+При старте приложение создается таблицы по указанной ниже схеме и заполняет их данными в соответствии с переданным XML-файлом:
 
-## Features:
-- REST-service
-- Java 8
-- PostgreSQL
+`CREATE TABLE BOX
+(ID INTEGER PRIMARY KEY,
+CONTAINED_IN INTEGER
+);
+CREATE TABLE ITEM
+(ID INTEGER PRIMARY KEY,
+CONTAINED_IN INTEGER REFERENCES BOX(ID),
+COLOR VARCHAR(100)
+);
+`
 
-##  How to run?
+Приложен docker-compose файл для быстрого развёртывая дефолтной PostgreSQL.
 
-First, create a database in PostgreSQL. 
-Then, in the application.properties file, change the database connection configuration.
-The tables in the database are created automatically when the application is first started.
 
-Run the application
+Собираем проект через `maven package`, возможные варианты запуска:
 
-```
-mvn package
 java -jar target/*.jar --classpath=src\\main\\resources\\file\\input.xml
-```
 
-You also have other options for launching the application
-
-```
 java -jar target/*.jar --file=C:\\test\\input.xml
-```
 
-and
+java -jar target/*.jar --url=file:\\D:\\Desktop\\input.xml
 
-```
-java -jar target/*.jar --url=file:///D:/Desktop/input.xml
-```
 
-You can also change the port by adding it as the second argument
+Работа веб-сервиса
+После загрузки файла приложение работает, как REST-сервис, который возвращает id предметов заданного цвета (color), содержащиеся в ящике c заданным идентификатором (idBox) с учётом того, что в ящике может быть ещё ящик с предметами требуемого цвета.
 
-```
-java -jar target/*.jar --classpath=src\\main\\resources\\file\\input.xml --port=8087
-```
+Пример post-запроса POST /test HTTP/1.1
+Host: localhost
+Accept: application/json
+Content-Type:application/json
+Content-Length: 25
+{"boxId":"1","color":"red"}
 
-After starting the application, you can send POST requests to the address http://localhost/test with the "box" and "color" parameters.
+Формат ссылок
+Ссылка имеет следующий формат: type:path, где:
+
+type - тип ссылки
+path - путь к файлу
+Ссылка определяет источник, из которого загружаются данные в XML-формате.
+Тип ссылки (type):
+
+file (внешний файл)
+classpath (файл в classpath)
+url (URL)
+Примеры:
+
+file:input.xml
+classpath:input.xml
+url:file:/input.xml
+
+Основные сущности приложения - предмет (Item) и коробка (Box):
+Ящики могут быть пустыми или содержать предметы или другие ящики
+У каждого ящика и предмета есть id
+ID какого-либо предмета и какого-либо ящика могут совпадать, но в совокупности предметов они уникальны (как и в совокупности ящиков)
+Предметы могут не иметь цвета
+Предметы могут быть не в ящике
+Вложенность ящиков может быть любой;

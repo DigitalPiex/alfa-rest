@@ -18,24 +18,27 @@ public class FilterServiceImpl implements FilterService {
 
         Integer id = null;
         try {
-            id = Integer.valueOf(box);
+            id = Integer.parseInt(box);
         } catch (NumberFormatException ex) {
             box = "";
         }
 
-        if (box.isEmpty() && color.isEmpty()) {
-            return itemService.findAll();
+        boolean isBoxEmpty = box.isEmpty();
+        boolean isColorEmpty = color.isEmpty();
+
+        List<Item> resultItems;
+
+        if (isBoxEmpty && isColorEmpty) {
+            resultItems = itemService.findAll();
+        } else if (isBoxEmpty) {
+            resultItems = itemService.findByColor(color);
+        } else if (isColorEmpty) {
+            resultItems = itemService.findByBoxId(id);
+        } else {
+            resultItems = itemService.findByBoxIdAndColor(id, color);
         }
 
-        if (box.isEmpty()) {
-            return itemService.findByColor(color);
-        }
-
-        if (color.isEmpty()) {
-            return itemService.findByBoxId(id);
-        }
-
-        return itemService.findByBoxIdAndColor(id, color);
+        return resultItems;
     }
 
 }

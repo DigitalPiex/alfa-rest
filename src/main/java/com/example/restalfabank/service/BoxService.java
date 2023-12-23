@@ -4,6 +4,6 @@ import com.example.restalfabank.model.Box;
 
 public interface BoxService {
 
-    void save(Box box);
+    Box save(Box box);
 
 }

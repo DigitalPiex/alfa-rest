@@ -5,10 +5,12 @@ import com.example.restalfabank.repository.ItemRepository;
 import com.example.restalfabank.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
