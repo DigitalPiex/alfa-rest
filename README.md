@@ -1,9 +1,13 @@
-Стек технологий: Java17, PostgreSQL, Hibernate, SpringBoot
+# Box-Item REST-service
+
+
+## Стек технологий: Java17, PostgreSQL, Hibernate, SpringBoot
 
 Входные данные
 При старте приложение создается таблицы по указанной ниже схеме и заполняет их данными в соответствии с переданным XML-файлом:
 
-`CREATE TABLE BOX
+```
+CREATE TABLE BOX
 (ID INTEGER PRIMARY KEY,
 CONTAINED_IN INTEGER
 );
@@ -12,29 +16,29 @@ CREATE TABLE ITEM
 CONTAINED_IN INTEGER REFERENCES BOX(ID),
 COLOR VARCHAR(100)
 );
-`
+```
 
 Приложен docker-compose файл для быстрого развёртывая дефолтной PostgreSQL.
 
 
-Собираем проект через `maven package`, возможные варианты запуска:
-
+## Собираем проект через `maven package`, возможные варианты запуска:
+```
 java -jar target/*.jar --classpath=src\\main\\resources\\file\\input.xml
-
 java -jar target/*.jar --file=C:\\test\\input.xml
-
 java -jar target/*.jar --url=file:\\D:\\Desktop\\input.xml
-
+```
 
 Работа веб-сервиса
 После загрузки файла приложение работает, как REST-сервис, который возвращает id предметов заданного цвета (color), содержащиеся в ящике c заданным идентификатором (idBox) с учётом того, что в ящике может быть ещё ящик с предметами требуемого цвета.
 
+```
 Пример post-запроса POST /test HTTP/1.1
 Host: localhost
 Accept: application/json
 Content-Type:application/json
 Content-Length: 25
 {"boxId":"1","color":"red"}
+```
 
 Формат ссылок
 Ссылка имеет следующий формат: type:path, где:
